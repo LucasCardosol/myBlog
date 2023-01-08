@@ -269,6 +269,14 @@ const GlobalStyle = createGlobalStyle`
         color: rgba(110, 235, 131, 1);
         cursor: pointer;
     }
+    .text{
+        img{
+            max-height: 654px;
+            max-width: 872px;
+            margin: 15px 100% 15px 0;
+            
+        }
+    }
     @media (min-width: 769px) and (max-width: 1440px) {
         h1{
             font-size: 1.6rem;

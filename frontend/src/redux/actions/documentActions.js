@@ -8,7 +8,10 @@ import {
     DOCUMENT_POST_FAIL,
     IMAGE_LIST_REQUEST,
     IMAGE_LIST_SUCCES,
-    IMAGE_LIST_FAIL
+    IMAGE_LIST_FAIL,
+    IMAGE_POST_REQUEST,
+    IMAGE_POST_SUCCES,
+    IMAGE_POST_FAIL
  } from "../../constants/ReduxDocuemnts"
 
 
@@ -69,11 +72,44 @@ export const registerDocument = (title,text,date) => async (dispatch) => {
             payload: data
         })
 
-        localStorage.setItem('userInfo', JSON.stringify(data))
     }catch(error){
         console.log(error)
         dispatch({
             type: DOCUMENT_POST_FAIL,
+            payload: error.response && error.response.data.message
+            ? error.response.data.message
+            :error.message
+        })
+    }
+}
+
+export const registerImage = (document,image) => async (dispatch) => {
+    try{
+        dispatch({
+            type: IMAGE_POST_REQUEST
+        })
+
+        const config = {
+            headers:{
+                'Content-type':'multipart/form-data'
+            }
+        }
+
+        const {data} = await axios.post(
+            'http://127.0.0.1:8000/api/register_images',
+            {'image':image, 'document':document},
+            config
+            )
+
+        dispatch({
+            type:IMAGE_POST_SUCCES,
+            payload: data
+        })
+
+    }catch(error){
+        console.log(error)
+        dispatch({
+            type: IMAGE_POST_FAIL,
             payload: error.response && error.response.data.message
             ? error.response.data.message
             :error.message

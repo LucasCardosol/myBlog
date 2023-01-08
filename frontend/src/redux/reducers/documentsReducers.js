@@ -7,7 +7,10 @@ import {
     DOCUMENT_POST_FAIL,
     IMAGE_LIST_REQUEST,
     IMAGE_LIST_SUCCES,
-    IMAGE_LIST_FAIL
+    IMAGE_LIST_FAIL,
+    IMAGE_POST_REQUEST,
+    IMAGE_POST_SUCCES,
+    IMAGE_POST_FAIL
 } from "../../constants/ReduxDocuemnts"
 
 export const documentsReducer = (state = {data:[]}, action) => {
@@ -51,6 +54,22 @@ export const registerDocumentReducer = (state = {data:[]}, action) => {
             return { loading:false, data: action.payload }
         
         case DOCUMENT_POST_FAIL:
+            return {loading: false, error: action.payload}
+
+        default:
+            return state
+    }
+}
+
+export const registerImagesReducer = (state = {info:[]}, action) => {
+    switch(action.type){
+        case IMAGE_POST_REQUEST:
+            return {loading:true, info:[]}
+
+        case IMAGE_POST_SUCCES:
+            return { loading:false, info: action.payload }
+        
+        case IMAGE_POST_FAIL:
             return {loading: false, error: action.payload}
 
         default:

@@ -1,6 +1,6 @@
 import React , {useEffect, useState , useLayoutEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getDocumentsAction,registerDocument,getImagesAction} from '../../redux/actions/documentActions'
+import { getDocumentsAction,registerDocument,getImagesAction ,registerImage} from '../../redux/actions/documentActions'
 
 import { ItemStyle } from './style'
 import OutsideAlerter from '../../components/OutsideAlerter'
@@ -26,7 +26,6 @@ function Home() {
   const [actualOpen,setActualOpen] = useState(0)
   const [upLoadImage,setUpLoadImage] = useState([])
   const baseUrl = "http://127.0.0.1:8000/static"
-  console.log(upLoadImage)
   
   useEffect(()=>{
     dispatch(getDocumentsAction())
@@ -43,6 +42,12 @@ function Home() {
     let year = date.getFullYear();
     let currentDate = `${year}-${month}-${day}`;
     dispatch(registerDocument(title,text,currentDate))
+  }
+
+  const submitImage = (id,e) => {
+    setUpLoadImage([...e.target.files])
+    console.log(upLoadImage,e.target.files[0])
+    dispatch(registerImage(id,e.target.files[0]))
   }
  
   function TextItem({item}) {
@@ -81,7 +86,7 @@ function Home() {
             <>
               <br></br>
               <label className='addImage' htmlFor='addImage'>+ add Image</label>
-              <input type='file' className='none' id='addImage' multiple accept="image/*" onChange={(e) => setUpLoadImage([...e.target.files])}></input>
+              <input type='file' className='none' id='addImage' multiple accept="image/*" onChange={(e) => submitImage(item._id,e)}></input>
             </> 
           )
         }

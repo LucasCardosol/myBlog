@@ -1,12 +1,13 @@
 import {createStore, combineReducers, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import { documentsReducer, registerDocumentReducer , imagesReducer} from './redux/reducers/documentsReducers'
+import { documentsReducer, registerDocumentReducer , imagesReducer , registerImagesReducer} from './redux/reducers/documentsReducers'
 
 const reducer = combineReducers({
     documentList: documentsReducer,
     documentSend: registerDocumentReducer,
-    imageList: imagesReducer
+    imageList: imagesReducer,
+    imageSend:registerImagesReducer
 })
 
 const initialState = {}
