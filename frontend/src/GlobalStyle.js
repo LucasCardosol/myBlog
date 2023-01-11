@@ -8,6 +8,17 @@ const GlobalStyle = createGlobalStyle`
         background-color: #272727;
         padding-top: 100px;
         padding-bottom: 180px;
+        overflow-x: hidden;
+        ::-webkit-scrollbar-track {
+            background-color: #272727;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            background-color:red;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(110, 235, 131, 1);;
+        }
     }
     input, textArea{
         outline: none;
@@ -18,6 +29,10 @@ const GlobalStyle = createGlobalStyle`
     }
     ul{
         list-style-type: none;
+        margin: 0;
+    }
+    .listItems{
+        margin-top: 40px;
     }
     button{
         display: flex;
@@ -32,12 +47,14 @@ const GlobalStyle = createGlobalStyle`
         width: auto;
     }
     h1{
-        font-size: 1.8rem;
+        font-size: 32px;
+        line-height: 43.87px;
         margin: 0;
+        font-weight: 400;
     }
     p{
         font-family: 'Lexend Deca', sans-serif;
-        font-size: 1.2rem;
+        font-size: 20px;
         font-weight: 200;
         line-height: 25px;
         color: white;
@@ -53,7 +70,7 @@ const GlobalStyle = createGlobalStyle`
         ul{
             display: flex;
             flex-direction: column;
-            gap: 120px;
+            gap: 33px;
         }
         .latest{
             width: 65px;
@@ -66,7 +83,7 @@ const GlobalStyle = createGlobalStyle`
             letter-spacing: 0em;
             text-align: left;
             color: white;
-            margin-left: 33px;
+            margin-left: 68px;
             ::after{
                 content: '';
                 position: absolute;
@@ -88,6 +105,10 @@ const GlobalStyle = createGlobalStyle`
     .lexend{
         font-family: 'Lexend Deca', sans-serif;
         color: white;
+    }
+    .date{
+        font-weight: 600;
+        line-height: 40px;
     }
     .background{
         height: 145px;
@@ -154,7 +175,6 @@ const GlobalStyle = createGlobalStyle`
         background-color: rgba(110, 235, 131, 1);
         img{
             width: 30px;
-            
         }
     }
     @keyframes selfOpenAnimation{
@@ -268,26 +288,80 @@ const GlobalStyle = createGlobalStyle`
         border: 1px solid rgba(110, 235, 131, 1);
         color: rgba(110, 235, 131, 1);
         cursor: pointer;
+        
     }
+    
     .text{
         img{
-            max-height: 654px;
-            max-width: 872px;
+            
+            max-width: 100%;
             margin: 15px 100% 15px 0;
             
         }
     }
+    .alertBackground{
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.75);
+        top: 0;
+        left: 0;
+        z-index: 10;
+        .alertWindow{
+            width: 312px;
+            height: 156px;
+            background-color:red;
+            margin: auto;
+            margin-top: calc(50vh - 75px);
+            border: 1px solid rgba(110, 235, 131, 1);
+            background-color: #272727;
+            p{
+                padding: 28px 28px 8px 28px;
+            }
+        }
+    }
+    .divButtons{
+        display: flex;
+        justify-content: start;
+        gap:16px;
+        padding-left: 88px;
+        margin-top: 12px;
+        button, select{
+            height: 30px;
+            font-size: 13px;
+            font-family: 'Lexend Deca', sans-serif;
+            font-weight: 500;
+            text-align: center;
+            padding: 7px 18px;
+            border-radius: 100px;
+            border: 1px solid rgba(110, 235, 131, 1);
+            color: rgba(110, 235, 131, 1);
+            transition: 0s;
+            background-color: #272727;
+            :hover{
+                background-color: rgba(0, 0, 0, 0.4);
+                cursor: pointer;
+            }
+            :active{
+                background-color: black;
+            }
+        }
+        select{
+            :hover{
+                background-color: rgba(0, 0, 0, 0.8);
+                
+            }
+        }
+    }
+    .pagination{
+        padding: 0;
+        margin-top: 66px !important;
+        justify-content: center;
+    }
     @media (min-width: 769px) and (max-width: 1440px) {
-        h1{
-            font-size: 1.6rem;
-        }
-        p,span{
-            font-size: 1rem;
-            text-justify: justify;
-        }
-        input,textArea{
-            font-size: 1rem;
-        }
+        
+        
+        
         .background{
             left: 25px;
         }
@@ -297,12 +371,8 @@ const GlobalStyle = createGlobalStyle`
         }
     }
     @media (max-width: 769px) {
-        h1{
-            font-size: 1.4rem;
-        }
-        p,span{
-            font-size: 0.8rem;
-        }
+        
+        
         .background{
             left: 0;
 
