@@ -2,7 +2,7 @@ import React , {useEffect, useState , useLayoutEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { getDocumentsAction,registerDocument,getImagesAction ,registerImage, deleteDocument, updateDocument} from '../../redux/actions/documentActions'
-import { getTags } from '../../redux/actions/tagActions'
+import { getTags ,registerTag, deleteTag} from '../../redux/actions/tagActions'
 import { ItemStyle } from './style'
 import OutsideAlerter from '../../components/OutsideAlerter'
 import plus from '../../assets/images/plus.svg'
@@ -18,7 +18,7 @@ function Home() {
   const [title,setTitle] = useState('')
   const [text,setText] = useState('')
   const [tag, setTag] = useState('')
-  
+  const [tagName, setTagName] = useState('')
   //redux and data states
   const baseUrl = "http://127.0.0.1:8000/static"
   const dispatch = useDispatch()
@@ -41,14 +41,15 @@ function Home() {
   const [editOrCreate, setEditOrCreate] = useState('')
   const [page, setPage] = useState(0)
   const [limit, setLimit] = useState(3)
- 
+  const [detectImageUpload, setDetectImageUpload] = useState(false)
 
   useEffect(()=>{
     dispatch(getDocumentsAction(page,limit))
-  },[dispatch,page])
+  },[dispatch,page, detectImageUpload])
   
   useEffect(()=>{
     dispatch(getTags())
+   
   },[dispatch])
 
   useLayoutEffect(()=>{
@@ -67,6 +68,13 @@ function Home() {
     setDisplay('none')
   }
 
+  const submitTagHandler = async (e) => {
+    e.preventDefault()
+    await dispatch(registerTag(tagName))
+    dispatch(getTags())
+    setTagName('')
+  }
+
   const submitEditHandler = (e) => {
     e.preventDefault()
     dispatch(updateDocument(title,text,actualEdit,tag))
@@ -80,11 +88,17 @@ function Home() {
     dispatch(getDocumentsAction(page,limit))
   }
 
+  const deleteTagHandler = async (id) =>{
+    await dispatch(deleteTag(id))
+    dispatch(getTags())
+
+  }
+
   const submitImage = (id,e,order) => {
     setUpLoadImage([...e.target.files])
     dispatch(registerImage(id,e.target.files[0],order))
     setActualOpen(id)
-    dispatch(getDocumentsAction(page,limit))
+    window.location.reload(false);
   }
  
   function TextItem({item}) {
@@ -238,9 +252,9 @@ function Home() {
             <form onSubmit={editOrCreate==='create'?submitHandler: submitEditHandler}>
               <div>
                 <input placeholder='Título' type='text' required value={title} onChange={(e)=>setTitle(e.target.value)}></input>
-                <select value={tag?tag:-1} onChange={(e) => setTag(e.target.value)}>
+                <select value={tag?tag:0} onChange={(e) => setTag(e.target.value)}>
                   
-                  <option value={-1}>Tag name</option>
+                  <option value={0}>Tag name</option>
                   {tagList.data.map((item, index)=>
                   
                   <option key={index} value={item._id}>{item.name}</option>
@@ -257,26 +271,24 @@ function Home() {
         </OutsideAlerter>
         
         <OutsideAlerter hookDisplay={setAddTag} >
-          
-          <div className={`createDocument ${addTag}`}>
-              <div>
-                <input placeholder='Create tag here' value={title} onChange={(e)=>setTitle(e.target.value)}></input>
-                <select value={tag?tag:-1} onChange={(e) => setTag(e.target.value)}>
-                  
-                  <option value={-1}>Tag name</option>
-                  {tagList.data.map((item, index)=>
-                  
-                  <option key={index} value={item._id}>{item.name}</option>
-                  )}
-                </select>
+          <div className={`addTag ${addTag}`}>
+            <form onSubmit={submitTagHandler}>
+              <div className='inputArea'>
+                <input placeholder='Create tag here' value={tagName} onChange={(e)=>setTagName(e.target.value)} required></input>
+                <button type='submit'><p>Add tag</p></button>
               </div>
-              <textarea value={text} onChange={(e)=>setText(e.target.value)} placeholder='What are you studyng?' type='text' required></textarea>
-              <button type='submit'>
-                <img src={send} alt='img'></img>
-                <p>Enviar</p>
-              </button>
+            </form>
+            <div className='tags'>
+              {
+                tagList.data.map((item, index)=>
+                  <div key={index} className='tag'>
+                    <p>{item.name}</p>
+                    <button onClick={() => deleteTagHandler(item._id)}>x</button>
+                  </div>
+                  )
+              }
+            </div>
           </div>
-          
         </OutsideAlerter>
 
         <div className={`alertBackground ${alertWindow}`}>
@@ -312,7 +324,7 @@ function Home() {
                 <img src={search} alt='img'></img>
                 <p>search</p>
               </button>
-              <button onClick={() => {setTag(-1);setDisplay('block');setTitle('');setText('');setEditOrCreate('create')}}>
+              <button onClick={() => {setTag(0);setDisplay('block');setTitle('');setText('');setEditOrCreate('create')}}>
                 <img src={plus} alt='img'></img>
                 <p>create</p>
               </button>
