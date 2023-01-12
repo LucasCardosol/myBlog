@@ -45,7 +45,6 @@ def deleteDocument(request,id):
 @api_view(['PUT'])
 def updateDocument(request, id):
     data = request.data
-    print(data)
     document = Document.objects.get(_id=id)
     document.title = data['title']
     document.text = data['text']
@@ -60,7 +59,19 @@ def updateDocument(request, id):
 
 @api_view(['POST'])
 def postDocuments(request):
-    serializer = DocumentSerializer(data=request.data)
+    data = request.data
+    tagValue = None
+    if data['tag'] == None or data['tag'] == '0':
+        tagValue = None
+    else:
+        tagValue = Tag.objects.get(_id=data['tag'])
+    document = Document.objects.create(
+        title=data['title'],
+        text=data['text'],
+        date=data['date'],
+        tag = tagValue
+    )
+    serializer = DocumentSerializer(document, many=False)
     try:
         serializer.is_valid(raise_exception=True)
         serializer.save()

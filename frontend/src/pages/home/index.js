@@ -63,7 +63,7 @@ function Home() {
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
     let currentDate = `${year}-${month}-${day}`;
-    dispatch(registerDocument(title,text,currentDate))
+    dispatch(registerDocument(title,text,currentDate,tag))
     dispatch(getDocumentsAction(page,limit))
     setDisplay('none')
   }
