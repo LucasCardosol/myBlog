@@ -5,8 +5,8 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from django.shortcuts import get_list_or_404
-from .models import Document, Image
-from .serializers import DocumentSerializer, ImageSerializer
+from .models import Document, Image , Tag
+from .serializers import DocumentSerializer, ImageSerializer , TagSerializer
 
 # Create your views here.
 
@@ -24,7 +24,8 @@ def getDocumentsFiltered(request,interval,limit,tag=None, title=None):
     if title!=None:
         documents = documents.filter(title=title)
     nlen = len(documents)
-    documents = documents[0+(interval*limit):limit+(interval*limit)]
+    #[0+(interval*limit):limit+(interval*limit)]
+    documents = documents[::-1][0+(interval*limit):limit+(interval*limit)]
     serializer = DocumentSerializer(documents, many=True)
     return Response([serializer.data,nlen])
 
@@ -47,6 +48,12 @@ def updateDocument(request, id):
     document = Document.objects.get(_id=id)
     document.title = data['title']
     document.text = data['text']
+    
+    if data['tag']==-1:
+        
+        document.tag = None
+    elif data['tag'] != -1:
+        document.tag = Tag.objects.get(_id=data['tag']) 
     document.save()
     serializer = DocumentSerializer(document, many=False)
     return Response(serializer.data)
@@ -79,4 +86,33 @@ def getImage(request,id):
     serializer = ImageSerializer(image, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def getTags(request):
+    tags = Tag.objects.all()
+    serializer = TagSerializer(tags, many=True)
+    return Response(serializer.data)
 
+@api_view(['DELETE'])
+def deleteTag(request,id):
+    tag = Tag.objects.get(_id=id)
+    tag.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['PUT'])
+def updateTag(request, id):
+    data = request.data
+    tag = Tag.objects.get(_id=id)
+    tag.name = data['name']
+    tag.save()
+    serializer = TagSerializer(tag, many=False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def postTag(request):
+    serializer = TagSerializer(data=request.data)
+    try:
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except:
+        Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)

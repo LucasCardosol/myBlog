@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
             background: rgba(110, 235, 131, 1);;
         }
     }
-    input, textArea{
+    input, textArea , select , option{
         outline: none;
         font-family: 'Lexend Deca', sans-serif;
         color: white;
@@ -143,6 +143,10 @@ const GlobalStyle = createGlobalStyle`
                 height: 50px;
                 display: flex;
                 gap:14px;
+                
+                .tagIcon{
+                    height: 35px;
+                }
                 :hover{
                     background-color: rgba(0, 0, 0, 0.2);
                 }
@@ -232,6 +236,26 @@ const GlobalStyle = createGlobalStyle`
         ::-webkit-scrollbar-thumb {
             background: rgba(110, 235, 131, 1);;
         }
+        div{
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            gap: 15px;
+        }
+        select, option{
+            color:white;
+            font-family: 'Lexend Deca', sans-serif;
+            background-color: #272727;
+            max-width: 150px;
+            margin-right: -17px;
+            :hover{
+                background-color: rgba(0, 0, 0, 0.2);
+            }
+            cursor: pointer;
+        }
+        option{
+            max-width: none;
+        }
         form{
             display: flex;
             flex-direction:column ;
@@ -248,7 +272,7 @@ const GlobalStyle = createGlobalStyle`
         img{
             height: 40px;
         }
-        input, textArea{
+        input, textArea, select{
             background-color: transparent;
             border: 1px solid rgba(110, 235, 131, 1);
             outline: none;
@@ -258,7 +282,7 @@ const GlobalStyle = createGlobalStyle`
             }
         }
         input{
-            width: 50%;
+            flex: 1
         }
         textArea{
             width: 100%;
@@ -348,8 +372,7 @@ const GlobalStyle = createGlobalStyle`
         }
         select{
             :hover{
-                background-color: rgba(0, 0, 0, 0.8);
-                
+                background-color: rgba(0, 0, 0, 0.8); 
             }
         }
     }
@@ -358,10 +381,16 @@ const GlobalStyle = createGlobalStyle`
         margin-top: 66px !important;
         justify-content: center;
     }
+    .addTag{
+        position: fixed;
+        top: 100px;
+        height: 50px;
+        width: 50px;
+        z-index: 100;
+        background-color: red;
+        left: 500px;
+    }
     @media (min-width: 769px) and (max-width: 1440px) {
-        
-        
-        
         .background{
             left: 25px;
         }
@@ -371,8 +400,6 @@ const GlobalStyle = createGlobalStyle`
         }
     }
     @media (max-width: 769px) {
-        
-        
         .background{
             left: 0;
 
@@ -387,5 +414,4 @@ const GlobalStyle = createGlobalStyle`
         }
     }
 `;
- 
 export default GlobalStyle;

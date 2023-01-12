@@ -56,7 +56,7 @@ export const getImagesAction = (id) => async(dispatch) => {
     }
 }
 
-export const registerDocument = (title,text,date) => async (dispatch) => {
+export const registerDocument = (title,text,date,tag) => async (dispatch) => {
     try{
         dispatch({
             type: DOCUMENT_POST_REQUEST
@@ -70,7 +70,7 @@ export const registerDocument = (title,text,date) => async (dispatch) => {
 
         const {data} = await axios.post(
             'http://127.0.0.1:8000/api/documents/register/',
-            {'title':title, 'text':text, 'date':date},
+            {'title':title, 'text':text, 'date':date ,'tag':tag},
             config
             )
 
@@ -90,7 +90,7 @@ export const registerDocument = (title,text,date) => async (dispatch) => {
     }
 }
 
-export const updateDocument = (title,text, id) => async (dispatch) => {
+export const updateDocument = (title,text, id, tag) => async (dispatch) => {
     try{
         dispatch({
             type: DOCUMENT_UPDATE_REQUEST
@@ -104,7 +104,7 @@ export const updateDocument = (title,text, id) => async (dispatch) => {
 
         const {data} = await axios.put(
             `http://127.0.0.1:8000/api/documents/${id}/update/`,
-            {'title':title, 'text':text},
+            {'title':title, 'text':text, 'tag':tag},
             config
             )
 

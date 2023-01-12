@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Document, Image
+from .models import Document, Image, Tag
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,4 +9,9 @@ class DocumentSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Image
+        fields = '__all__'
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
         fields = '__all__'
