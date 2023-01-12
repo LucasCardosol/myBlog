@@ -28,3 +28,34 @@ export const tagListReducer = (state = {data:[]}, action) => {
             return state
     }
 }
+
+export const tagRegisterReducer = (state = {data:[]}, action) => {
+    switch(action.type){
+        case TAG_POST_REQUEST:
+            return {loading:true, data:[]}
+
+        case TAG_POST_SUCCES:
+            return { loading:false, data: action.payload }
+        
+        case TAG_POST_FAIL:
+            return {loading: false, error: action.payload}
+
+        default:
+            return state
+    }
+}
+export const tagDeleteReducer = (state = {data:[]}, action) => {
+    switch(action.type){
+        case TAG_DELETE_REQUEST:
+            return {loading:true, data:[]}
+
+        case TAG_DELETE_SUCCES:
+            return { loading:false, data: action.payload }
+        
+        case TAG_DELETE_FAIL:
+            return {loading: false, error: action.payload}
+
+        default:
+            return state
+    }
+}

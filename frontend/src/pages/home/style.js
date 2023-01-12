@@ -27,6 +27,7 @@ export const ItemStyle = styled.div`
                 line-height: 25px;
                 color: white;
                 margin: 0;
+                white-space: pre-line;
             }
             button{
                 padding-left: 2px;

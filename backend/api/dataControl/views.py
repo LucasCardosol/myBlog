@@ -45,14 +45,13 @@ def deleteDocument(request,id):
 @api_view(['PUT'])
 def updateDocument(request, id):
     data = request.data
+    print(data)
     document = Document.objects.get(_id=id)
     document.title = data['title']
     document.text = data['text']
-    
-    if data['tag']==-1:
-        
+    if data['tag'] == None or data['tag'] == '0':
         document.tag = None
-    elif data['tag'] != -1:
+    else:
         document.tag = Tag.objects.get(_id=data['tag']) 
     document.save()
     serializer = DocumentSerializer(document, many=False)

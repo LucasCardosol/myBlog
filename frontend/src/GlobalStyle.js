@@ -9,6 +9,9 @@ const GlobalStyle = createGlobalStyle`
         padding-top: 100px;
         padding-bottom: 180px;
         overflow-x: hidden;
+        
+    }
+    div,body,textArea{
         ::-webkit-scrollbar-track {
             background-color: #272727;
         }
@@ -27,6 +30,14 @@ const GlobalStyle = createGlobalStyle`
         font-size: 1.2rem;
         font-weight: 200;
     }
+    input, textArea, select{
+            background-color: transparent;
+            border: 1px solid rgba(110, 235, 131, 1);
+            padding: 8px;
+            ::placeholder{
+                color: white;
+            }
+        }
     ul{
         list-style-type: none;
         margin: 0;
@@ -214,6 +225,7 @@ const GlobalStyle = createGlobalStyle`
     .block{
         display: block;
     }
+    
     .createDocument{
         position: fixed;
         width: 573px;
@@ -226,16 +238,7 @@ const GlobalStyle = createGlobalStyle`
         border: 1px solid rgba(110, 235, 131, 1);
         overflow-y: scroll;
         overflow-x: hidden;
-        ::-webkit-scrollbar-track {
-            background-color: #272727;
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            background-color:red;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(110, 235, 131, 1);;
-        }
+        
         div{
             display: flex;
             justify-content: space-between;
@@ -272,15 +275,7 @@ const GlobalStyle = createGlobalStyle`
         img{
             height: 40px;
         }
-        input, textArea, select{
-            background-color: transparent;
-            border: 1px solid rgba(110, 235, 131, 1);
-            outline: none;
-            padding: 8px;
-            ::placeholder{
-                color: white;
-            }
-        }
+        
         input{
             flex: 1
         }
@@ -288,16 +283,7 @@ const GlobalStyle = createGlobalStyle`
             width: 100%;
             height: 45vh;
             resize: none;
-            ::-webkit-scrollbar-track {
-            background-color: #272727;
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            background-color:red;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(110, 235, 131, 1);;
-        }
+            
         }
         
     }
@@ -383,12 +369,61 @@ const GlobalStyle = createGlobalStyle`
     }
     .addTag{
         position: fixed;
-        top: 100px;
-        height: 50px;
-        width: 50px;
-        z-index: 100;
-        background-color: red;
-        left: 500px;
+        width: 573px;
+        height: 70vh;
+        background-color: #272727;
+        bottom: 135px;
+        left: calc(50% - 274px);
+        padding: 15px;
+        border: 1px solid rgba(110, 235, 131, 1);
+        .inputArea{
+            display: flex;
+            justify-content: space-between;
+            gap: 13px;
+            width: 100%;
+            input{
+                flex: 1;
+            }
+            button{
+            background-color: transparent;
+            border: 1px solid rgba(110, 235, 131, 1);
+            outline: none;
+            padding: 8px;
+            border-radius: 0;
+            :hover{
+                background-color: rgba(0, 0, 0, 0.5); 
+            }
+        }
+        }
+        .tags{
+            height: 395px;
+            width: 98%;
+            border: 1px solid rgba(110, 235, 131, 1);
+            margin-top: 13px;
+            overflow-y: scroll;
+            padding: 7.5px 0 0 7.5px;
+        }
+        .tag{
+            height: 25px;
+            border: 1px solid rgba(110, 235, 131, 1);
+            outline: none;
+            padding: 8px;
+            display: inline-block;
+            margin-right: 7.5px;
+            margin-bottom: 6.5px;
+            img{
+                color: white;
+            }
+            button{
+                float: right;
+            }
+            p{
+                float: left;
+            }
+            
+        }
+        
+        
     }
     @media (min-width: 769px) and (max-width: 1440px) {
         .background{
