@@ -15,6 +15,7 @@ export const ItemStyle = styled.div`
                 writing-mode:vertical-rl;
                 transform: rotate(-180deg);
                 line-height: 20px;
+                
             }
             
         }

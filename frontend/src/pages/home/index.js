@@ -19,6 +19,10 @@ function Home() {
   const [text,setText] = useState('')
   const [tag, setTag] = useState('')
   const [tagName, setTagName] = useState('')
+  const [applyFilter,setApplyFilter] = useState(false)
+  const [titleFilter, setTitleFilter] = useState('')
+  const [tagFilter, setTagFilter] = useState(0)
+  console.log(applyFilter)
   //redux and data states
   const baseUrl = "http://127.0.0.1:8000/static"
   const dispatch = useDispatch()
@@ -32,6 +36,7 @@ function Home() {
   //layout states
   const [display, setDisplay] = useState('none')
   const [addTag, setAddTag] = useState('none')
+  const [searchArea, setSearchArea] = useState('none')
   const [actualOpen,setActualOpen] = useState(0)
   const [upLoadImage,setUpLoadImage] = useState([])
   const [menuState, setMenuState] = useState(false)
@@ -43,13 +48,18 @@ function Home() {
   const [limit, setLimit] = useState(3)
   const [detectImageUpload, setDetectImageUpload] = useState(false)
 
+  const getDocument = () => {
+    applyFilter
+    ?dispatch(getDocumentsAction(page,limit,tagFilter,titleFilter))
+    :dispatch(getDocumentsAction(page,limit,0,''))
+  }
+
   useEffect(()=>{
-    dispatch(getDocumentsAction(page,limit))
-  },[dispatch,page, detectImageUpload])
+    getDocument()
+  },[dispatch,page, detectImageUpload,limit])
   
   useEffect(()=>{
     dispatch(getTags())
-   
   },[dispatch])
 
   useLayoutEffect(()=>{
@@ -64,28 +74,33 @@ function Home() {
     let year = date.getFullYear();
     let currentDate = `${year}-${month}-${day}`;
     dispatch(registerDocument(title,text,currentDate,tag))
-    dispatch(getDocumentsAction(page,limit))
+    getDocument()
     setDisplay('none')
   }
 
   const submitTagHandler = async (e) => {
     e.preventDefault()
-    await dispatch(registerTag(tagName))
-    dispatch(getTags())
-    setTagName('')
+    const repeated = tagList.data.filter(item => tagName === item.name)
+    if (repeated.length === 0){
+      await dispatch(registerTag(tagName))
+      dispatch(getTags())
+      setTagName('')
+    } else{
+      console.log('Ja existe')
+    }
   }
 
   const submitEditHandler = (e) => {
     e.preventDefault()
     dispatch(updateDocument(title,text,actualEdit,tag))
     console.log(tag)
-    dispatch(getDocumentsAction(page,limit))
+    getDocument()
     setDisplay('none')
   }
 
   const deleteDocHandler = (id) =>{
     dispatch(deleteDocument(id))
-    dispatch(getDocumentsAction(page,limit))
+    getDocument()
   }
 
   const deleteTagHandler = async (id) =>{
@@ -237,7 +252,7 @@ function Home() {
         <div className='divButtons pagination' style={{margin: '0 auto'}}>
           <button onClick={() => {setPage(page*limit!==0 ?page-1:page)}}>{'<'}</button>
           <button disabled>page: {page+1}</button>
-          <select value={limit} onChange={(e) => {setLimit(e.target.value);setPage(0);dispatch(getDocumentsAction(page,e.target.value))}} name="select">
+          <select value={limit} onChange={(e) => {setLimit(e.target.value);setPage(0)}} name="select">
             <option value={1}>1 rows</option>
             <option value={3}>3 rows</option>
             <option value={6}>6 rows</option>
@@ -291,6 +306,39 @@ function Home() {
           </div>
         </OutsideAlerter>
 
+        <OutsideAlerter hookDisplay={setSearchArea} >
+          <div className={`searchArea ${searchArea}`}>
+            <div className='inputArea'>
+              <div className='inputs'>
+                <input placeholder='Title' value={titleFilter} onChange={(e) => setTitleFilter(e.target.value)}></input>
+                <select value={tagFilter?tagFilter:0} onChange={(e) => setTagFilter(e.target.value)}>
+                  
+                  <option value={0}>Tag name</option>
+                  {tagList.data.map((item, index)=>
+                  
+                  <option key={index} value={item._id}>{item.name}</option>
+                  )}
+                </select>
+              </div>
+              <div className='checkbox'>
+                <p>Apply Filter?</p>
+                <label htmlFor='applyFilter'>
+                  <div className={`sliderButton ${applyFilter?'on':'off'}`}>
+                    <p className={applyFilter?'yes':'no'}>
+                      {applyFilter?'yes':'no'}
+                    </p>
+                  </div>
+                </label>
+                <input checked={applyFilter} onChange={(e) => setApplyFilter(!applyFilter)} type='checkbox' id='applyFilter'></input>
+              </div>
+            </div>
+            <button onClick={() => getDocument()}>
+              <img src={send} alt='img'></img>
+                <p>Apply</p>
+              </button>
+          </div>
+        </OutsideAlerter>
+
         <div className={`alertBackground ${alertWindow}`}>
           <OutsideAlerter hookDisplay={setAlertWindow}>
             <div className='alertWindow'>
@@ -302,6 +350,7 @@ function Home() {
             </div>
           </OutsideAlerter>
         </div>
+
         <div className={`background`}>
           <button className={`buttonMenu ${menuState?'selfClose':'selfOpen'}`} onClick={() => {setMenuState(true);setReadyLoaded(true)}}>
             <img src={menu} alt="menu"></img>
@@ -320,7 +369,7 @@ function Home() {
                 <img src={circle} alt='img'></img>
                 <p>Lucas</p>
               </button>
-              <button>
+              <button onClick={() => setSearchArea('block')}>
                 <img src={search} alt='img'></img>
                 <p>search</p>
               </button>

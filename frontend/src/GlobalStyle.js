@@ -31,7 +31,7 @@ const GlobalStyle = createGlobalStyle`
         font-weight: 200;
     }
     input, textArea, select{
-            background-color: transparent;
+            background-color: #272727;
             border: 1px solid rgba(110, 235, 131, 1);
             padding: 8px;
             ::placeholder{
@@ -422,8 +422,85 @@ const GlobalStyle = createGlobalStyle`
             }
             
         }
-        
-        
+       
+    }
+    .searchArea{
+        position: fixed;
+        width: 573px;
+        height: 70vh;
+        background-color: #272727;
+        bottom: 135px;
+        left: calc(50% - 274px);
+        padding: 15px;
+        border: 1px solid rgba(110, 235, 131, 1);
+        button{
+            
+            gap:14px;
+            width: 150px;
+            margin: 0 auto;
+            margin-top: 300px;
+            :hover{
+                background-color: rgba(0, 0, 0, 0.2);
+            }
+        }
+        img{
+            height: 40px;
+        }
+        .inputArea{
+            display: flex;
+            gap: 13px;
+            div{
+                display: flex;
+                flex-direction: column;
+                gap: 13px;
+            }
+            .inputs{
+                flex: 1;
+            }
+            
+            .checkbox{
+                align-items: flex-end;
+                p{
+                    padding: 8px 0;
+                }
+                label{
+                    height: 40px;
+                    width:100%;
+                    border: 1px solid rgba(110, 235, 131, 1);
+                    cursor: pointer;
+                    
+                    .sliderButton{
+                        height: 100%;
+                        width: 50%;
+                        transition: 0.5s;
+                        z-index: 3;
+                        text-align: center !important;
+                        p{  
+                            transition: 0.5s;
+                            display: inline;
+                            text-align: center;
+                        }
+                        .yes{
+                            margin-right: -200%;
+                        }
+                        .no{
+                            margin-left: -200%;
+                        }
+                    }
+                    .on{
+                        margin-left: 0;
+                        background-color:rgba(110, 235, 131, 1) ;
+                    }
+                    .off{
+                        margin-left: 50%;
+                        background-color: #DC3545;
+                    }
+                }
+                input{
+                    display: none;
+                }
+            }
+        }
     }
     @media (min-width: 769px) and (max-width: 1440px) {
         .background{

@@ -21,10 +21,10 @@ import {
  } from "../../constants/ReduxDocuemnts"
 
 
-export const getDocumentsAction = (interval,limit) => async(dispatch) => {
+export const getDocumentsAction = (interval,limit,tag,title) => async(dispatch) => {
     try{
         dispatch({type: DOCUMENT_LIST_REQUEST })
-        const {data} = await axios.get(`api/documents/filtered/${interval}/${limit}`)
+        const {data} = await axios.get(`api/documents/filtered/${interval}/${limit}/${tag}/${title?title:''}`)
         
         dispatch({
             type:DOCUMENT_LIST_SUCCES,
