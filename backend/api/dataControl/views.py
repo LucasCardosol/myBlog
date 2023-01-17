@@ -96,6 +96,7 @@ def getImage(request,id):
     serializer = ImageSerializer(image, many=True)
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 def getTags(request):
     tags = Tag.objects.all()

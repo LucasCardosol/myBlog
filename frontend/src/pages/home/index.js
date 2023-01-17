@@ -1,5 +1,6 @@
 import React , {useEffect, useState , useLayoutEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { CodeBlock, atomOneDark } from "react-code-blocks";
 
 import { getDocumentsAction,registerDocument,getImagesAction ,registerImage, deleteDocument, updateDocument} from '../../redux/actions/documentActions'
 import { getTags ,registerTag, deleteTag} from '../../redux/actions/tagActions'
@@ -12,6 +13,7 @@ import menu from '../../assets/images/menu.png'
 import xbutton from '../../assets/images/x.svg'
 import send from '../../assets/images/send.svg'
 import tagIcon from '../../assets/images/tagicon.svg'
+const textCode = `myVar =  input('Digite algo')\r\ndef lucas(argumento): a = 'b'`
 
 function Home() {
   //inputs states
@@ -22,7 +24,7 @@ function Home() {
   const [applyFilter,setApplyFilter] = useState(false)
   const [titleFilter, setTitleFilter] = useState('')
   const [tagFilter, setTagFilter] = useState(0)
-  console.log(applyFilter)
+ 
   //redux and data states
   const baseUrl = "http://127.0.0.1:8000/static"
   const dispatch = useDispatch()
@@ -38,7 +40,6 @@ function Home() {
   const [addTag, setAddTag] = useState('none')
   const [searchArea, setSearchArea] = useState('none')
   const [actualOpen,setActualOpen] = useState(0)
-  const [upLoadImage,setUpLoadImage] = useState([])
   const [menuState, setMenuState] = useState(false)
   const [readyLoaded, setReadyLoaded] = useState(false)
   const [alertWindow, setAlertWindow] = useState('none')
@@ -86,14 +87,13 @@ function Home() {
       dispatch(getTags())
       setTagName('')
     } else{
-      console.log('Ja existe')
+      
     }
   }
 
   const submitEditHandler = (e) => {
     e.preventDefault()
     dispatch(updateDocument(title,text,actualEdit,tag))
-    console.log(tag)
     getDocument()
     setDisplay('none')
   }
@@ -110,17 +110,40 @@ function Home() {
   }
 
   const submitImage = (id,e,order) => {
-    setUpLoadImage([...e.target.files])
+    
     dispatch(registerImage(id,e.target.files[0],order))
     setActualOpen(id)
     window.location.reload(false);
   }
  
+  function MyCoolCodeBlock(props) {
+    let text = props.text.split(',-,')
+    return (
+      <div className='codeBlock'>
+      {
+        text.map((item, index) =>
+          <CodeBlock
+          key = {index}
+          text={props.text}
+          language={props.language}
+          showLineNumbers={false}
+          theme={atomOneDark}
+      />
+        )
+      }
+      </div>
+    );
+  }
+
   function TextItem({item}) {
     const [textLimit, setTextLimit] = useState(true)
-    const textCut = item.text.length>525 ?item.text.slice(0,525):false
-    const textCutValue = item.text.slice(0,525)
-    const textSplited = item.text.split('##img##')
+    const textSplitedRemoving = item.text.split(/##img##|##code##/)
+    const textSplited = item.text.split(/(##img##)|(##code##)/)
+    const [countImg ,setCountImg] = useState(0)
+
+    const textCutBoolean = item.text.length>525 ?true:false
+    const textCutValue = textSplitedRemoving.join('').slice(0,525)
+
     const [year, month, day] = item.date.split('-',3)
     const listMonths = {
       "01":"JAN",
@@ -140,54 +163,50 @@ function Home() {
     useLayoutEffect(()=>{
       textLimit && (actualOpen===item._id)? setTextLimit(false):setTextLimit(true)
     },[actualOpen])
+    
+   
+    
 
     function interpreter() {
-      const countVerify = (count) =>{
-        
-        if(textSplited.length>count+1 && actualOpen===item._id && imageList.info.length>0){
-          var verify = false
-          var position = 0
-          for(var i = 0; i<imageList.info.length; i++){
-            if(imageList.info[i].order===count+1){
-              verify = true
-              position = i
-              break
-            }
+      const imgExist = imageList.info.length>0
+
+
+      function returnInterpreter(i,index){
+        if (i === "##img##"){
+          const image = imageList.info.find(element => element.order===index)? imageList.info.find(element => element.order===index).image: false
+
+          if (image){
+            
+            return (
+              <img src={`${baseUrl}${image}`} alt={'img'}></img>
+            )
+          }else {
+            return(
+              <>
+                <br></br>
+                <label className='addImage' htmlFor='addImage'>+ add Image</label>
+                <input type='file' className='none' id='addImage' multiple accept="image/*" onChange={(e) => submitImage(item._id,e,index)}></input>
+            </> 
+            )
           }
-          return(
-            verify
-            ?<img src={`${baseUrl}${imageList.info[position]?imageList.info[position].image:''}`} alt={'img'}></img>
-            :<>
-            <br></br>
-            <label className='addImage' htmlFor='addImage'>+ add Image</label>
-            <input type='file' className='none' id='addImage' multiple accept="image/*" onChange={(e) => submitImage(item._id,e,count+1)}></input>
-            </> 
-          )
-        }else if(textSplited.length>count+1){
-          
-          return(
-            <>
-              <br></br>
-              <label className='addImage' htmlFor='addImage'>+ add Image</label>
-              <input type='file' className='none' id='addImage' multiple accept="image/*" onChange={(e) => submitImage(item._id,e,count+1)}></input>
-            </> 
-          )
+        } else if (i === "##code##"){
+          return 'code'
+        } else {
+          return i
         }
       }
+
       return (
-        
         <>
         {
-          
-          textSplited.map((i, index) => 
-            <div key={index}>
-            {i}
-            {countVerify(index)}
-            </div>
-          )
+          textSplited.map((i, index)=>
+          <div key={index} >
+            {returnInterpreter(i,index)}
+          </div>)
         }
         </>
       )
+
     }
 
     return (
@@ -204,11 +223,11 @@ function Home() {
             <div>
             <div className='text'>
               <span>
-                {(textCut && textLimit) || ((textSplited.length>1) && textLimit)? textCutValue: interpreter()}
+                {(textCutBoolean && textLimit) || ((textSplited.length>1) && textLimit)? textCutValue: interpreter()}
               </span>
               
               {
-                textCut || textSplited.length>1?
+                textCutBoolean || textSplited.length>1?
                   textLimit?
                   <button onClick={() => {setActualOpen(item._id)}}><p>...read more</p></button>:
                   <button onClick={() => {setActualOpen(0)}}><p>...read less</p></button>
@@ -216,7 +235,6 @@ function Home() {
               }
             </div>
             </div>
-            
           </div>
         </div>
         <div>
@@ -242,6 +260,7 @@ function Home() {
   return (
     <div className='container homeItens'>
         <span className='latest'>Latest</span>
+        
         <ul className='listItems'>
         {
           dataFiltered.map((item,index)=>
@@ -249,6 +268,13 @@ function Home() {
           ) 
         }
         </ul>
+        <MyCoolCodeBlock
+          text={textCode}
+          language='python'
+          className='codeBlock'
+          highlight="1,2"
+        />
+        
         <div className='divButtons pagination' style={{margin: '0 auto'}}>
           <button onClick={() => {setPage(page*limit!==0 ?page-1:page)}}>{'<'}</button>
           <button disabled>page: {page+1}</button>

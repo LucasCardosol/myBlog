@@ -77,6 +77,15 @@ const GlobalStyle = createGlobalStyle`
         max-width: 1024px;
         margin: 0 auto;
     }
+    .codeBlock{
+        background-color: #282C34;
+        padding: 8px;
+    }
+    code{
+        font-family: 'Consolas', 'Courier New', monospace !important;
+        padding: 0 !important;
+        padding-right: 8px !important;
+    }
     .homeItens{
         ul{
             display: flex;
