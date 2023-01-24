@@ -2,17 +2,18 @@ import React , {useEffect, useState , useLayoutEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 
-import { getDocumentsAction,registerDocument,getImagesAction ,registerImage, deleteDocument, updateDocument} from '../../redux/actions/documentActions'
+import { getDocumentsAction,getImagesAction ,registerImage, deleteDocument} from '../../redux/actions/documentActions'
 import { getTags ,registerTag, deleteTag} from '../../redux/actions/tagActions'
 import { ItemStyle } from './style'
 import OutsideAlerter from '../../components/OutsideAlerter'
+import CreateText from '../../components/CreateText';
 import plus from '../../assets/images/plus.svg'
 import search from '../../assets/images/search.svg'
 import circle from '../../assets/images/Ellipse.svg'
 import menu from '../../assets/images/menu.png'
 import xbutton from '../../assets/images/x.svg'
-import send from '../../assets/images/send.svg'
 import tagIcon from '../../assets/images/tagicon.svg'
+import send from '../../assets/images/send.svg'
 const textCode = `myVar =  input('Digite algo')\r\ndef lucas(argumento): a = 'b'`
 
 function Home() {
@@ -23,7 +24,7 @@ function Home() {
   const [tagName, setTagName] = useState('')
   const [applyFilter,setApplyFilter] = useState(false)
   const [titleFilter, setTitleFilter] = useState('')
-  const [tagFilter, setTagFilter] = useState(0)
+  const [tagFilter, setTagFilter] = useState('0')
  
   //redux and data states
   const baseUrl = "http://127.0.0.1:8000/static"
@@ -67,18 +68,6 @@ function Home() {
     if(actualOpen !== 0){dispatch(getImagesAction(actualOpen))}
   },[actualOpen])
 
-  const submitHandler = (e) => {
-    e.preventDefault()
-    let date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-    let currentDate = `${year}-${month}-${day}`;
-    dispatch(registerDocument(title,text,currentDate,tag))
-    getDocument()
-    setDisplay('none')
-  }
-
   const submitTagHandler = async (e) => {
     e.preventDefault()
     const repeated = tagList.data.filter(item => tagName === item.name)
@@ -91,13 +80,6 @@ function Home() {
     }
   }
 
-  const submitEditHandler = (e) => {
-    e.preventDefault()
-    dispatch(updateDocument(title,text,actualEdit,tag))
-    getDocument()
-    setDisplay('none')
-  }
-
   const deleteDocHandler = (id) =>{
     dispatch(deleteDocument(id))
     getDocument()
@@ -106,13 +88,12 @@ function Home() {
   const deleteTagHandler = async (id) =>{
     await dispatch(deleteTag(id))
     dispatch(getTags())
-
   }
 
   const submitImage = (id,e,order) => {
-    
     dispatch(registerImage(id,e.target.files[0],order))
     setActualOpen(id)
+    setDetectImageUpload(true)
     window.location.reload(false);
   }
  
@@ -128,6 +109,7 @@ function Home() {
           language={props.language}
           showLineNumbers={false}
           theme={atomOneDark}
+          actualEdit = {actualEdit}
       />
         )
       }
@@ -140,10 +122,8 @@ function Home() {
     const textSplitedRemoving = item.text.split(/##img##|##code##/)
     const textSplited = item.text.split(/(##img##)|(##code##)/)
     const [countImg ,setCountImg] = useState(0)
-
     const textCutBoolean = item.text.length>525 ?true:false
     const textCutValue = textSplitedRemoving.join('').slice(0,525)
-
     const [year, month, day] = item.date.split('-',3)
     const listMonths = {
       "01":"JAN",
@@ -239,6 +219,7 @@ function Home() {
         </div>
         <div>
           <div className='divButtons'>
+
             <button onClick={() => {
               setActualEdit(item._id);
               setMenuState(true);
@@ -250,6 +231,7 @@ function Home() {
               setDisplay('');}}>
                 Editar
             </button>
+            
             <button onClick={() => {setActualEdit(item._id);setAlertWindow('')}}>Excluir</button>
           </div>
         </div>
@@ -288,28 +270,20 @@ function Home() {
           <button onClick={() => setPage(realLenData>(page+1)*limit?page+1:page)}>{'>'}</button>
         </div>
 
-        <OutsideAlerter hookDisplay={setDisplay} >
-          <div className={`createDocument ${display}`}>
-            <form onSubmit={editOrCreate==='create'?submitHandler: submitEditHandler}>
-              <div>
-                <input placeholder='Título' type='text' required value={title} onChange={(e)=>setTitle(e.target.value)}></input>
-                <select value={tag?tag:0} onChange={(e) => setTag(e.target.value)}>
-                  
-                  <option value={0}>Tag name</option>
-                  {tagList.data.map((item, index)=>
-                  
-                  <option key={index} value={item._id}>{item.name}</option>
-                  )}
-                </select>
-              </div>
-              <textarea value={text} onChange={(e)=>setText(e.target.value)} placeholder='What are you studyng?' type='text' required></textarea>
-              <button type='submit'>
-                <img src={send} alt='img'></img>
-                <p>Enviar</p>
-              </button>
-            </form>
-          </div>
-        </OutsideAlerter>
+        <CreateText 
+          getDocument={getDocument}
+          actualEdit = {actualEdit}
+          tagList={tagList}
+          editOrCreate={editOrCreate}
+          setDisplay={setDisplay}
+          display={display}
+          title={title}
+          text={text}
+          tag = {tag}
+          setTitle={setTitle}
+          setText={setText}
+          setTag={setTag}
+        />
         
         <OutsideAlerter hookDisplay={setAddTag} >
           <div className={`addTag ${addTag}`}>
@@ -399,7 +373,7 @@ function Home() {
                 <img src={search} alt='img'></img>
                 <p>search</p>
               </button>
-              <button onClick={() => {setTag(0);setDisplay('block');setTitle('');setText('');setEditOrCreate('create')}}>
+              <button onClick={() => {setTag('0');setDisplay('block');setTitle('');setText('');setEditOrCreate('create')}}>
                 <img src={plus} alt='img'></img>
                 <p>create</p>
               </button>

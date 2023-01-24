@@ -59,22 +59,21 @@ def updateDocument(request, id):
 
 @api_view(['POST'])
 def postDocuments(request):
-    data = request.data
-    tagValue = None
-    if data['tag'] == None or data['tag'] == '0':
-        tagValue = None
-    else:
-        tagValue = Tag.objects.get(_id=data['tag'])
-    document = Document.objects.create(
-        title=data['title'],
-        text=data['text'],
-        date=data['date'],
-        tag = tagValue
-    )
-    serializer = DocumentSerializer(document, many=False)
     try:
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        data = request.data
+        tagValue = None
+        if data['tag'] == None or data['tag'] == '0':
+            tagValue = None
+        else:
+            tagValue = Tag.objects.get(_id=data['tag'])
+        document = Document.objects.create(
+            title=data['title'],
+            text=data['text'],
+            date=data['date'],
+            tag = tagValue
+        )
+        document.save()
+        serializer = DocumentSerializer(document, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except:
         Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
