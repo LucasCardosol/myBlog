@@ -2,7 +2,9 @@ import {createStore, combineReducers, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { documentsReducer, registerDocumentReducer , imagesReducer , registerImagesReducer} from './redux/reducers/documentsReducers'
-import { tagListReducer , tagPostReducer, tagRegisterReducer} from './redux/reducers/tagsReducers'
+import { tagListReducer , tagRegisterReducer} from './redux/reducers/tagsReducers'
+import { codeListReducer, codePostReducer } from './redux/reducers/codeReducers'
+
 
 const reducer = combineReducers({
     documentList: documentsReducer,
@@ -11,7 +13,8 @@ const reducer = combineReducers({
     imageSend:registerImagesReducer,
     tagList: tagListReducer,
     tagSend: tagRegisterReducer,
-    
+    codeList: codeListReducer,
+    codePost: codePostReducer
 })
 
 const initialState = {}

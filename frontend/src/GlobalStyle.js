@@ -11,11 +11,12 @@ const GlobalStyle = createGlobalStyle`
         overflow-x: hidden;
         
     }
-    div,body,textArea{
+    div,body,textarea, select,span{
         ::-webkit-scrollbar-track {
             background-color: #272727;
         }
         ::-webkit-scrollbar {
+           
             width: 6px;
             background-color:red;
         }
@@ -80,11 +81,14 @@ const GlobalStyle = createGlobalStyle`
     .codeBlock{
         background-color: #282C34;
         padding: 8px;
+        
+        
     }
     code{
         font-family: 'Consolas', 'Courier New', monospace !important;
         padding: 0 !important;
         padding-right: 8px !important;
+        
     }
     .homeItens{
         ul{
@@ -509,6 +513,38 @@ const GlobalStyle = createGlobalStyle`
                     display: none;
                 }
             }
+        }
+    }
+
+    .formCode{
+        background-color: #282C34;
+        width: 451px;
+        padding:8px;
+        textarea{
+            border: none;
+            background-color: transparent;
+            min-width: 96%;
+            max-width: 96%;
+            max-height: 320px;
+            min-height: 80px;
+        }
+        button, select{
+            color: #6EEB83;
+            border: 1px solid #6EEB83;
+            height: 45px;
+            border-radius:0;
+            padding: 8px !important;
+            background-color: transparent;
+            cursor: pointer;
+        }
+        select{
+            background-color: #282C34;
+        }
+        div{
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 8px;
+            
         }
     }
     @media (min-width: 769px) and (max-width: 1440px) {

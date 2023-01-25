@@ -2,26 +2,30 @@ import React , {useEffect, useState , useLayoutEffect} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CodeBlock, atomOneDark } from "react-code-blocks";
 
-import { getDocumentsAction,getImagesAction ,registerImage, deleteDocument} from '../../redux/actions/documentActions'
-import { getTags ,registerTag, deleteTag} from '../../redux/actions/tagActions'
+import { getCodes} from '../../redux/actions/codeActions';
+import { getTags} from '../../redux/actions/tagActions'
+import { getDocumentsAction,getImagesAction ,registerImage} from '../../redux/actions/documentActions'
 import { ItemStyle } from './style'
-import OutsideAlerter from '../../components/OutsideAlerter'
 import CreateText from '../../components/CreateText';
+import CreateTag from '../../components/CreateTag';
+import SearchArea from '../../components/SearchArea';
+import CodeWriter from '../../components/CodeWriter';
+
 import plus from '../../assets/images/plus.svg'
 import search from '../../assets/images/search.svg'
 import circle from '../../assets/images/Ellipse.svg'
 import menu from '../../assets/images/menu.png'
 import xbutton from '../../assets/images/x.svg'
 import tagIcon from '../../assets/images/tagicon.svg'
-import send from '../../assets/images/send.svg'
+import DeleteWindow from '../../components/alerts/deleteWindow';
 const textCode = `myVar =  input('Digite algo')\r\ndef lucas(argumento): a = 'b'`
+
 
 function Home() {
   //inputs states
   const [title,setTitle] = useState('')
   const [text,setText] = useState('')
   const [tag, setTag] = useState('')
-  const [tagName, setTagName] = useState('')
   const [applyFilter,setApplyFilter] = useState(false)
   const [titleFilter, setTitleFilter] = useState('')
   const [tagFilter, setTagFilter] = useState('0')
@@ -33,17 +37,18 @@ function Home() {
   const {error, loading, data} = documentList
   const imageList = useSelector(state => state.imageList)
   const tagList = useSelector(state => state.tagList)
+  const codeList = useSelector(state => state.codeList)
   const dataFiltered = data[0] ? data[0] : []
   const realLenData = data[1] ? data[1] : 0
   
   //layout states
+  const [alertWindow, setAlertWindow] = useState('none')
   const [display, setDisplay] = useState('none')
   const [addTag, setAddTag] = useState('none')
   const [searchArea, setSearchArea] = useState('none')
   const [actualOpen,setActualOpen] = useState(0)
   const [menuState, setMenuState] = useState(false)
   const [readyLoaded, setReadyLoaded] = useState(false)
-  const [alertWindow, setAlertWindow] = useState('none')
   const [actualEdit, setActualEdit] = useState(0)
   const [editOrCreate, setEditOrCreate] = useState('')
   const [page, setPage] = useState(0)
@@ -52,42 +57,8 @@ function Home() {
 
   const getDocument = () => {
     applyFilter
-    ?dispatch(getDocumentsAction(page,limit,tagFilter,titleFilter))
-    :dispatch(getDocumentsAction(page,limit,0,''))
-  }
-
-  useEffect(()=>{
-    getDocument()
-  },[dispatch,page, detectImageUpload,limit])
-  
-  useEffect(()=>{
-    dispatch(getTags())
-  },[dispatch])
-
-  useLayoutEffect(()=>{
-    if(actualOpen !== 0){dispatch(getImagesAction(actualOpen))}
-  },[actualOpen])
-
-  const submitTagHandler = async (e) => {
-    e.preventDefault()
-    const repeated = tagList.data.filter(item => tagName === item.name)
-    if (repeated.length === 0){
-      await dispatch(registerTag(tagName))
-      dispatch(getTags())
-      setTagName('')
-    } else{
-      
-    }
-  }
-
-  const deleteDocHandler = (id) =>{
-    dispatch(deleteDocument(id))
-    getDocument()
-  }
-
-  const deleteTagHandler = async (id) =>{
-    await dispatch(deleteTag(id))
-    dispatch(getTags())
+    ? dispatch(getDocumentsAction(page,limit,tagFilter,titleFilter))
+    : dispatch(getDocumentsAction(page,limit,0,''))
   }
 
   const submitImage = (id,e,order) => {
@@ -96,7 +67,9 @@ function Home() {
     setDetectImageUpload(true)
     window.location.reload(false);
   }
- 
+  
+  
+  
   function MyCoolCodeBlock(props) {
     let text = props.text.split(',-,')
     return (
@@ -121,7 +94,6 @@ function Home() {
     const [textLimit, setTextLimit] = useState(true)
     const textSplitedRemoving = item.text.split(/##img##|##code##/)
     const textSplited = item.text.split(/(##img##)|(##code##)/)
-    const [countImg ,setCountImg] = useState(0)
     const textCutBoolean = item.text.length>525 ?true:false
     const textCutValue = textSplitedRemoving.join('').slice(0,525)
     const [year, month, day] = item.date.split('-',3)
@@ -139,24 +111,19 @@ function Home() {
       "11":"NOV",
       "12":"DEC",
     }
-
+    
     useLayoutEffect(()=>{
       textLimit && (actualOpen===item._id)? setTextLimit(false):setTextLimit(true)
     },[actualOpen])
-    
-   
+
     
 
     function interpreter() {
       const imgExist = imageList.info.length>0
-
-
       function returnInterpreter(i,index){
         if (i === "##img##"){
           const image = imageList.info.find(element => element.order===index)? imageList.info.find(element => element.order===index).image: false
-
           if (image){
-            
             return (
               <img src={`${baseUrl}${image}`} alt={'img'}></img>
             )
@@ -170,12 +137,30 @@ function Home() {
             )
           }
         } else if (i === "##code##"){
-          return 'code'
+          const code = codeList.data.find(element => element.order===index)? codeList.data.find(element => element.order===index): false
+          if (code){
+            return (
+              <MyCoolCodeBlock
+                text={code.code}
+                language={code.language}
+                className='codeBlock'
+            />
+            )
+          }else {
+            return(
+              <>
+              {console.log(actualOpen,index)}
+              <CodeWriter
+                document={actualOpen}
+                order={index}
+              />
+              </>
+            )
+          }
         } else {
           return i
         }
       }
-
       return (
         <>
         {
@@ -186,9 +171,7 @@ function Home() {
         }
         </>
       )
-
     }
-
     return (
       <ItemStyle>
         <div className='boxText'>
@@ -239,10 +222,24 @@ function Home() {
     )
   }
 
+  useEffect(()=>{
+    getDocument()
+  },[dispatch,page, detectImageUpload,limit])
+  
+  useEffect(()=>{
+    dispatch(getTags())
+  },[dispatch])
+
+  useLayoutEffect(()=>{
+    if(actualOpen !== 0){
+      dispatch(getImagesAction(actualOpen))
+      dispatch(getCodes(actualOpen))
+    }
+  },[actualOpen])
+
   return (
     <div className='container homeItens'>
         <span className='latest'>Latest</span>
-        
         <ul className='listItems'>
         {
           dataFiltered.map((item,index)=>
@@ -250,12 +247,13 @@ function Home() {
           ) 
         }
         </ul>
-        <MyCoolCodeBlock
+
+        {/*<MyCoolCodeBlock
           text={textCode}
           language='python'
           className='codeBlock'
           highlight="1,2"
-        />
+      />*/}
         
         <div className='divButtons pagination' style={{margin: '0 auto'}}>
           <button onClick={() => {setPage(page*limit!==0 ?page-1:page)}}>{'<'}</button>
@@ -285,77 +283,36 @@ function Home() {
           setTag={setTag}
         />
         
-        <OutsideAlerter hookDisplay={setAddTag} >
-          <div className={`addTag ${addTag}`}>
-            <form onSubmit={submitTagHandler}>
-              <div className='inputArea'>
-                <input placeholder='Create tag here' value={tagName} onChange={(e)=>setTagName(e.target.value)} required></input>
-                <button type='submit'><p>Add tag</p></button>
-              </div>
-            </form>
-            <div className='tags'>
-              {
-                tagList.data.map((item, index)=>
-                  <div key={index} className='tag'>
-                    <p>{item.name}</p>
-                    <button onClick={() => deleteTagHandler(item._id)}>x</button>
-                  </div>
-                  )
-              }
-            </div>
-          </div>
-        </OutsideAlerter>
+        <CreateTag
+          setAddTag={setAddTag}
+          tagList={tagList}
+          addTag={addTag}
+        />
 
-        <OutsideAlerter hookDisplay={setSearchArea} >
-          <div className={`searchArea ${searchArea}`}>
-            <div className='inputArea'>
-              <div className='inputs'>
-                <input placeholder='Title' value={titleFilter} onChange={(e) => setTitleFilter(e.target.value)}></input>
-                <select value={tagFilter?tagFilter:0} onChange={(e) => setTagFilter(e.target.value)}>
-                  
-                  <option value={0}>Tag name</option>
-                  {tagList.data.map((item, index)=>
-                  
-                  <option key={index} value={item._id}>{item.name}</option>
-                  )}
-                </select>
-              </div>
-              <div className='checkbox'>
-                <p>Apply Filter?</p>
-                <label htmlFor='applyFilter'>
-                  <div className={`sliderButton ${applyFilter?'on':'off'}`}>
-                    <p className={applyFilter?'yes':'no'}>
-                      {applyFilter?'yes':'no'}
-                    </p>
-                  </div>
-                </label>
-                <input checked={applyFilter} onChange={(e) => setApplyFilter(!applyFilter)} type='checkbox' id='applyFilter'></input>
-              </div>
-            </div>
-            <button onClick={() => getDocument()}>
-              <img src={send} alt='img'></img>
-                <p>Apply</p>
-              </button>
-          </div>
-        </OutsideAlerter>
+        <SearchArea
+          setSearchArea={setSearchArea}
+          searchArea={searchArea}
+          titleFilter={titleFilter}
+          setTitleFilter={setTitleFilter}
+          tagFilter={tagFilter}
+          setTagFilter={setTagFilter}
+          tagList={tagList}
+          applyFilter={applyFilter}
+          setApplyFilter={setApplyFilter}
+          getDocument={getDocument}
+        />
 
-        <div className={`alertBackground ${alertWindow}`}>
-          <OutsideAlerter hookDisplay={setAlertWindow}>
-            <div className='alertWindow'>
-              <p>Tem certeza de que deseja excluir o item?</p>
-              <div className='divButtons'>
-                <button onClick={() => {deleteDocHandler(actualEdit);setAlertWindow('none')}}>Sim</button>
-                <button onClick={() => setAlertWindow('none')}>Não</button>
-              </div>
-            </div>
-          </OutsideAlerter>
-        </div>
+        <DeleteWindow 
+          actualEdit={actualEdit}
+          getDocument={getDocument}
+          setAlertWindow = {setAlertWindow}
+          alertWindow = {alertWindow}
+        />
 
         <div className={`background`}>
           <button className={`buttonMenu ${menuState?'selfClose':'selfOpen'}`} onClick={() => {setMenuState(true);setReadyLoaded(true)}}>
             <img src={menu} alt="menu"></img>
           </button>
-          
           <div className={`${
             readyLoaded?
               menuState?'selfOpen':'selfClose':

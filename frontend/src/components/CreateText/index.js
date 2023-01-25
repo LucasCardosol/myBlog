@@ -1,11 +1,12 @@
-import React,{ useState } from 'react'
-import OutsideAlerter from '../OutsideAlerter'
+import React from 'react'
 import { useDispatch} from 'react-redux'
+
+import OutsideAlerter from '../OutsideAlerter'
 import { registerDocument ,updateDocument} from '../../redux/actions/documentActions'
 import send from '../../assets/images/send.svg'
 
+
 function CreateText(props) {
- 
   const dispatch = useDispatch()
 
   const submitHandler = (e) => {

@@ -19,5 +19,7 @@ urlpatterns = [
     path('api/tags/', views.getTags, name="tags"),
     path('api/tags/register/', views.postTag, name="register-tag"),
     path('api/tags/<int:id>/update/', views.updateTag, name="update-tag"),
-    path('api/tags/<int:id>/delete/', views.deleteTag, name="delete-tag")
+    path('api/tags/<int:id>/delete/', views.deleteTag, name="delete-tag"),
+    path('api/codes/<int:id>', views.getCodes, name="codes"),
+    path('api/codes/register/', views.postCode, name="code_register"),
 ]

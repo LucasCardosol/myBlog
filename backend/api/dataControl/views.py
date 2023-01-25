@@ -5,8 +5,8 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from django.shortcuts import get_list_or_404
-from .models import Document, Image , Tag
-from .serializers import DocumentSerializer, ImageSerializer , TagSerializer
+from .models import Document, Image , Tag, Code
+from .serializers import DocumentSerializer, ImageSerializer , TagSerializer , CodeSerializer
 
 # Create your views here.
 
@@ -123,6 +123,29 @@ def postTag(request):
     try:
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except:
+        Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getCodes(request,id):
+    codes = Code.objects.filter(document=id)
+    serializer = CodeSerializer(codes, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def postCode(request):
+    try:
+        data = request.data
+        code = Code.objects.create(
+            code=data['code'],
+            language=data['language'],
+            order=data['order'],
+            document = Document.objects.get(_id=data['document'])
+        )
+        print('\n**********Aqui*********\n',code)
+        code.save()
+        serializer = DocumentSerializer(code, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except:
         Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)

@@ -13,7 +13,9 @@ class Document(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
     date = models.DateField(null=False, blank=False ,default='2022-01-01')
     _id = models.AutoField(primary_key=True, editable=False)
-    
+    def __str__(self) :
+        return str(self.title)
+        
 
 class Image(models.Model):
     image = models.ImageField(null=True, blank=True)
@@ -32,4 +34,4 @@ class Code(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
     
     def __str__(self) :
-        return str(self.document+'code '+self.order)
+        return str(str(self._id)+' '+str(self.language)+' '+str(self.order))
