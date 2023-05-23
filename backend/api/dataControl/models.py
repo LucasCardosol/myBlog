@@ -1,13 +1,21 @@
 from django.db import models
 
 # Create your models here.
+class SimpleUser(models.Model):
+    name = models.CharField(max_length=50, null=False, blank=False, unique=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+    def __str__(self) :
+        return str(self.name)
+
 class Tag (models.Model):
     name = models.CharField(max_length=50, null=False, blank=False ,default='*name folder')
+    user = models.ForeignKey(SimpleUser, on_delete=models.CASCADE , default=0)
     _id = models.AutoField(primary_key=True, editable=False)
     def __str__(self) :
         return str(self.name)
 
 class Document(models.Model):
+    user = models.ForeignKey(SimpleUser, on_delete=models.CASCADE , default=0)
     title = models.CharField(max_length=50, null=False, blank=False ,default='title')
     text = models.TextField(null=False, blank=False, default='0000-00-00')
     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)

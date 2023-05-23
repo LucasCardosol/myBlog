@@ -40,7 +40,7 @@ export const postCode = (code,language, order, document) => async(dispatch) => {
         }
 
         const {data} = await axios.post(
-            'http://127.0.0.1:8000/api/codes/register/',
+            '/api/codes/register/',
             {'code':code, 'language':language, 'order':order,'document':document},
             config
             )
@@ -51,7 +51,7 @@ export const postCode = (code,language, order, document) => async(dispatch) => {
         })
 
     }catch(error){
-        console.log(error)
+      
         dispatch({
             type: CODE_POST_FAIL,
             payload: error.response && error.response.data.message

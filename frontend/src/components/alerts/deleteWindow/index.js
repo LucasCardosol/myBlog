@@ -2,7 +2,7 @@ import React  from 'react'
 import OutsideAlerter from '../../OutsideAlerter'
 import { deleteDocument } from '../../../redux/actions/documentActions'
 import { useDispatch } from 'react-redux'
-import { useState } from 'react'
+
 
 function DeleteWindow(props) {
     const dispatch = useDispatch()

@@ -9,11 +9,10 @@ function CodeWriter(props) {
     const dispatch = useDispatch()
 
     const submitCode = (e) => {
-        e.preventDefault()
-        console.log(textCode, language,props.order, props.document)
-      dispatch(postCode(textCode, language,props.order, props.document))
+      e.preventDefault()
       
-    
+      dispatch(postCode(textCode, language,props.order, props.document))
+      window.location.reload(false);
     }
 
     return (
@@ -22,7 +21,7 @@ function CodeWriter(props) {
         <div>
           <button type='submit'>Salvar</button>
           <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-            {console.log(language)}
+           
             <option value={0}>Linguagem</option>
             {
               languages.map((lang,index) => 

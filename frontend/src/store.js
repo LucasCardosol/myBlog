@@ -4,6 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 import { documentsReducer, registerDocumentReducer , imagesReducer , registerImagesReducer} from './redux/reducers/documentsReducers'
 import { tagListReducer , tagRegisterReducer} from './redux/reducers/tagsReducers'
 import { codeListReducer, codePostReducer } from './redux/reducers/codeReducers'
+import { PostUserReducer, UserReducer } from './redux/reducers/userReducers'
 
 
 const reducer = combineReducers({
@@ -14,7 +15,9 @@ const reducer = combineReducers({
     tagList: tagListReducer,
     tagSend: tagRegisterReducer,
     codeList: codeListReducer,
-    codePost: codePostReducer
+    codePost: codePostReducer,
+    user: UserReducer,
+    userSend: PostUserReducer
 })
 
 const initialState = {}

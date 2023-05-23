@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const ItemStyle = styled.div`
     width: 966px;
+    
     .boxText{
         display: flex;
         .dateArea{
@@ -45,6 +46,37 @@ export const ItemStyle = styled.div`
                 }
             }
         }
+    }
+    @media only screen and (max-width: 768px) {
+        width: 100%;
+        .boxText{
+            flex-direction: column-reverse;
+        }
+        .dateArea{
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            h1{
+                font-family: Lexend Deca;
+                font-size: 16px;
+                font-weight: 600;
+                line-height: 20px !important;
+                letter-spacing: 0em;
+                text-align: left;
+                display: flex;
+                flex-direction: row;
+               
+                gap: 11px;
+                br{
+                    display: none;
+                }
+            }
+            span{
+                writing-mode: horizontal-tb !important;
+                transform: rotate(0deg) !important;
+            }
+        }
+        
     }
     
 `

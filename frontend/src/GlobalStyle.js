@@ -8,7 +8,7 @@ const GlobalStyle = createGlobalStyle`
         background-color: #272727;
         padding-top: 100px;
         padding-bottom: 180px;
-        overflow-x: hidden;
+        
         
     }
     div,body,textarea, select,span{
@@ -16,7 +16,7 @@ const GlobalStyle = createGlobalStyle`
             background-color: #272727;
         }
         ::-webkit-scrollbar {
-           
+            height: 6px;
             width: 6px;
             background-color:red;
         }
@@ -134,6 +134,22 @@ const GlobalStyle = createGlobalStyle`
         font-weight: 600;
         line-height: 40px;
     }
+    .xbutton{
+        display: flex;
+        padding: 0;
+        background-color: rgba(110, 235, 131, 1);
+        height: 20px;
+        width: 20px;
+        border-radius: 5px;
+        justify-content: center;
+        align-items: center;
+        :hover{
+            background-color: rgba(110, 235, 131, 1);
+        }
+        img{
+            height: 15px;
+        }
+    }
     .background{
         height: 145px;
         width: 100%;
@@ -163,6 +179,38 @@ const GlobalStyle = createGlobalStyle`
             justify-content: space-around;
             align-items: center;
             position: relative;
+            #dropdown-basic{
+                
+                background-color: transparent ;
+                border: none;
+                :hover{
+                    background-color: rgba(0, 0, 0, 0.2);
+                }
+            }
+            .dropdown-toggle{
+                ::after{
+                    content: none;
+                }
+            }
+            .circle{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 40px;
+                width: 40px;
+                border-radius: 40px;
+                background-color: rgba(110, 235, 131, 1);
+                p{
+                    text-transform: uppercase;
+                    color: rgba(39, 39, 39, 1);
+                    font-family: Lexend Deca;
+                    font-size: 20px;
+                    font-weight: 400;
+                    line-height: 25px;
+                    letter-spacing: 0em;
+                    text-align: left;
+                }
+            }
             button{
                 height: 50px;
                 display: flex;
@@ -176,27 +224,21 @@ const GlobalStyle = createGlobalStyle`
                 }
             }
             .xbutton{
-                padding: 0;
                 position: absolute;
                 top: 0;
                 right: 0;
-                background-color: rgba(110, 235, 131, 1);
                 height: 20px;
-                width: 20px;
                 margin: 5px;
-                border-radius: 5px;
-                justify-content: center;
-                align-items: center;
                 :hover{
                     background-color: rgba(110, 235, 131, 1);
-                }
-                img{
-                    height: 15px;
                 }
             }
         }
     }
     .buttonMenu{
+        position: fixed;
+        bottom: 30px;
+        left: calc(50% - 600px);
         height: 60px;
         width: 60px;
         border-radius: 100px;
@@ -218,7 +260,7 @@ const GlobalStyle = createGlobalStyle`
         animation-name: selfCloseAnimation;
         animation-duration: 0.3s;
         opacity: 0;
-        pointer-events: none;
+        pointer-events: none !important;
         
     }
     .selfOpen{
@@ -238,7 +280,9 @@ const GlobalStyle = createGlobalStyle`
     .block{
         display: block;
     }
-    
+    .flex{
+        display: flex;
+    }
     .createDocument{
         position: fixed;
         width: 573px;
@@ -255,6 +299,7 @@ const GlobalStyle = createGlobalStyle`
         div{
             display: flex;
             justify-content: space-between;
+            align-items: center;
             width: 100%;
             gap: 15px;
         }
@@ -277,18 +322,20 @@ const GlobalStyle = createGlobalStyle`
             flex-direction:column ;
             gap: 15px;
         }
-        button{
+        .submit{
             gap:14px;
             width: 150px;
             margin: 0 auto;
             :hover{
                 background-color: rgba(0, 0, 0, 0.2);
             }
+            img{
+                height: 40px;
+            }
         }
-        img{
-            height: 40px;
+        .xbutton{
+            margin-left: 30px;
         }
-        
         input{
             flex: 1
         }
@@ -315,10 +362,13 @@ const GlobalStyle = createGlobalStyle`
     }
     
     .text{
+        div{
+            white-space: pre-line
+        }
         img{
             
             max-width: 100%;
-            margin: 15px 100% 15px 0;
+            
             
         }
     }
@@ -330,12 +380,14 @@ const GlobalStyle = createGlobalStyle`
         top: 0;
         left: 0;
         z-index: 10;
+        
+        justify-content: center;
+        align-items: center;
         .alertWindow{
             width: 312px;
             height: 156px;
             background-color:red;
-            margin: auto;
-            margin-top: calc(50vh - 75px);
+            
             border: 1px solid rgba(110, 235, 131, 1);
             background-color: #272727;
             p{
@@ -547,6 +599,24 @@ const GlobalStyle = createGlobalStyle`
             
         }
     }
+    .addTag{
+           
+            
+            .tags{
+                height: 300px;
+                margin-top: 60px;
+            }
+            .tag{
+                display: inline-flex;
+                align-items: center;
+                height: 30px;
+                gap: 10px;
+                button{
+                    margin: 0;
+                    padding: 0;
+                }
+            }
+        }
     @media (min-width: 769px) and (max-width: 1440px) {
         .background{
             left: 25px;
@@ -559,14 +629,117 @@ const GlobalStyle = createGlobalStyle`
     @media (max-width: 769px) {
         .background{
             left: 0;
+            background-color: rgba(0, 0, 0, 0.75);
+        }
+       
+        .pagination{
+            position: fixed !important;
+            bottom: 103px;
+            z-index: 4;
+            left: calc(50% - 165px);
 
         }
+        .transparent {
+            opacity: 1 !important;
+            pointer-events: all !important;
+            max-width: 100%;
+            padding: 0 28px;
+            height: auto !important;
+        }
         .boxButton{
+            width: 100%;
+            max-width: 332px !important;
             height: 55px !important;
-            margin-top: 50px !important;
-            width: 50%;
+            margin: 0 auto!important;
+            margin-bottom: -40px !important;
+            .xbutton{
+                display: none !important;
+            }
+            p{
+                display: none;
+            }
+            .letter{
+                display: block;
+            }
+        }
+        .base{
+            height: 0px !important;
+        }
+        .text{
             img{
-                height:30px ;
+                margin: 0;
+            }
+        }
+        .formCode{
+            width: auto;
+            textarea{
+                
+                max-height: none;
+                height: 200px;
+            }
+
+        }
+        .searchArea, .createDocument {
+            width: 300px;
+            height: calc(70vh - 30px);
+            left: calc(50% - 150px);
+            margin-bottom: 30px;
+            
+            .inputArea{
+                flex-direction: column;
+                gap: 30px;
+            }
+            .checkbox{
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            button{
+                margin-top: 60px;
+            }
+        }
+        .addTag{
+            width: 300px;
+            height: calc(70vh - 30px);
+            left: calc(50% - 150px);
+            margin-bottom: 30px;
+            .inputArea{
+                flex-direction: column;
+            }
+            .tags{
+                height: 300px;
+                margin-top: 60px;
+            }
+            .tag{
+                display: inline-flex;
+                align-items: center;
+                height: 30px;
+                gap: 10px;
+                button{
+                    margin: 0;
+                    padding: 0;
+                }
+            }
+        }
+        .createDocument{
+            padding: 15px;
+            form{
+                div{
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                
+                input{
+                    width: 200px;
+                }
+                textarea{
+                    height: 280px;
+                }
+            }
+            .xbutton{
+                position: absolute;
+                top: 15px;
+                right: 5px;
+                margin: 0;
             }
         }
     }

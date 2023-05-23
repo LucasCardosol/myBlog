@@ -21,10 +21,11 @@ import {
  } from "../../constants/ReduxDocuemnts"
 
 
-export const getDocumentsAction = (interval,limit,tag,title) => async(dispatch) => {
+export const getDocumentsAction = (user,interval,limit,tag,title) => async(dispatch) => {
     try{
         dispatch({type: DOCUMENT_LIST_REQUEST })
-        const {data} = await axios.get(`api/documents/filtered/${interval}/${limit}/${tag}/${title?title:''}`)
+       
+        const {data} = await axios.get(`api/documents/filtered/${user}/${interval}/${limit}/${tag}/${title?title:''}`)
         
         dispatch({
             type:DOCUMENT_LIST_SUCCES,
@@ -42,7 +43,7 @@ export const getDocumentsAction = (interval,limit,tag,title) => async(dispatch) 
 export const getImagesAction = (id) => async(dispatch) => {
     try{
         dispatch({type: IMAGE_LIST_REQUEST })
-        const {data} = await axios.get(`api/images/${id}/`)
+        const {data} = await axios.get(`/api/images/${id}/`)
         dispatch({
             type:IMAGE_LIST_SUCCES,
             payload: data
@@ -56,7 +57,7 @@ export const getImagesAction = (id) => async(dispatch) => {
     }
 }
 
-export const registerDocument = (title,text,date,tag) => async (dispatch) => {
+export const registerDocument = (title,text,date,tag,user) => async (dispatch) => {
     try{
         dispatch({
             type: DOCUMENT_POST_REQUEST
@@ -69,7 +70,7 @@ export const registerDocument = (title,text,date,tag) => async (dispatch) => {
         }
 
         const {data} = await axios.post(
-            'http://127.0.0.1:8000/api/documents/register/',
+            `/api/documents/${user}/register/`,
             {'title':title, 'text':text, 'date':date ,'tag':tag},
             config
             )
@@ -80,7 +81,7 @@ export const registerDocument = (title,text,date,tag) => async (dispatch) => {
         })
 
     }catch(error){
-        console.log(error)
+        
         dispatch({
             type: DOCUMENT_POST_FAIL,
             payload: error.response && error.response.data.message
@@ -90,7 +91,7 @@ export const registerDocument = (title,text,date,tag) => async (dispatch) => {
     }
 }
 
-export const updateDocument = (title,text, id, tag) => async (dispatch) => {
+export const updateDocument = (title,text, id, tag, user) => async (dispatch) => {
     try{
         dispatch({
             type: DOCUMENT_UPDATE_REQUEST
@@ -103,8 +104,8 @@ export const updateDocument = (title,text, id, tag) => async (dispatch) => {
         }
 
         const {data} = await axios.put(
-            `http://127.0.0.1:8000/api/documents/${id}/update/`,
-            {'title':title, 'text':text, 'tag':tag},
+            `/api/documents/${user}/${id}/update/`,
+            {'title':title, 'text':text, 'tag':tag },
             config
             )
 
@@ -114,7 +115,7 @@ export const updateDocument = (title,text, id, tag) => async (dispatch) => {
         })
 
     }catch(error){
-        console.log(error)
+       
         dispatch({
             type: DOCUMENT_UPDATE_FAIL,
             payload: error.response && error.response.data.message
@@ -135,7 +136,7 @@ export const deleteDocument = (id) => async (dispatch) => {
             }
         }
         const {data} = await axios.delete(
-            `http://127.0.0.1:8000/api/documents/${id}/delete/`,
+            `/api/documents/${id}/delete/`,
             config
             )
         dispatch({
@@ -144,7 +145,7 @@ export const deleteDocument = (id) => async (dispatch) => {
         })
 
     }catch(error){
-        console.log(error)
+       
         dispatch({
             type: DOCUMENT_DELETE_FAIL,
             payload: error.response && error.response.data.message
@@ -167,7 +168,7 @@ export const registerImage = (document,image,order) => async (dispatch) => {
         }
 
         const {data} = await axios.post(
-            'http://127.0.0.1:8000/api/images/register/',
+            '/api/images/register/',
             {'image':image, 'document':document, 'order':order},
             config
             )
@@ -178,7 +179,7 @@ export const registerImage = (document,image,order) => async (dispatch) => {
         })
 
     }catch(error){
-        console.log(error)
+        
         dispatch({
             type: IMAGE_POST_FAIL,
             payload: error.response && error.response.data.message

@@ -3,9 +3,6 @@ import {
     TAG_LIST_REQUEST,
     TAG_LIST_SUCCES,
     TAG_LIST_FAIL,
-    TAG_UPDATE_REQUEST,
-    TAG_UPDATE_SUCCES,
-    TAG_UPDATE_FAIL,
     TAG_POST_REQUEST,
     TAG_POST_SUCCES,
     TAG_POST_FAIL,
@@ -14,10 +11,11 @@ import {
     TAG_DELETE_FAIL,
 } from "../../constants/ReduxTags";
 
-export const getTags = () => async(dispatch) => {
+export const getTags = (user) => async(dispatch) => {
+  
     try{
         dispatch({type: TAG_LIST_REQUEST })
-        const {data} = await axios.get(`api/tags/`)
+        const {data} = await axios.get(`api/${user}/tags/`)
         
         dispatch({
             type:TAG_LIST_SUCCES,
@@ -32,7 +30,7 @@ export const getTags = () => async(dispatch) => {
     }
 }
 
-export const registerTag = (name) => async (dispatch) => {
+export const registerTag = (name,user) => async (dispatch) => {
     try{
         dispatch({
             type: TAG_POST_REQUEST
@@ -45,7 +43,7 @@ export const registerTag = (name) => async (dispatch) => {
         }
 
         const {data} = await axios.post(
-            'http://127.0.0.1:8000/api/tags/register/',
+            `/api/${user}/tags/register/`,
             {'name':name},
             config
             )
@@ -56,7 +54,7 @@ export const registerTag = (name) => async (dispatch) => {
         })
 
     }catch(error){
-        console.log(error)
+        
         dispatch({
             type: TAG_POST_FAIL,
             payload: error.response && error.response.data.message
@@ -77,7 +75,7 @@ export const deleteTag = (id) => async (dispatch) => {
             }
         }
         const {data} = await axios.delete(
-            `http://127.0.0.1:8000/api/tags/${id}/delete/`,
+            `/api//tags/${id}/delete/`,
             config
             )
         dispatch({
@@ -86,7 +84,7 @@ export const deleteTag = (id) => async (dispatch) => {
         })
 
     }catch(error){
-        console.log(error)
+       
         dispatch({
             type: TAG_DELETE_FAIL,
             payload: error.response && error.response.data.message

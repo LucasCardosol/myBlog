@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from .models import Document, Image, Tag, Code
+from .models import Document, Image, Tag, Code, SimpleUser
+
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SimpleUser
+        fields = '__all__'
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:

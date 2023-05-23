@@ -13,8 +13,8 @@ function CreateTag(props) {
         e.preventDefault()
         const repeated = props.tagList.data.filter(item => tagName === item.name)
         if (repeated.length === 0){
-          await dispatch(registerTag(tagName))
-          dispatch(getTags())
+          await dispatch(registerTag(tagName, props.user))
+          dispatch(getTags(props.user))
           setTagName('')
         } else{
           window.alert('não vale nome repetido')
@@ -23,7 +23,7 @@ function CreateTag(props) {
 
       const deleteTagHandler = async (id) =>{
         await dispatch(deleteTag(id))
-        dispatch(getTags())
+        dispatch(getTags(props.user))
       }
 
     return (

@@ -5,8 +5,8 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from django.shortcuts import get_list_or_404
-from .models import Document, Image , Tag, Code
-from .serializers import DocumentSerializer, ImageSerializer , TagSerializer , CodeSerializer
+from .models import Document, Image , Tag, Code , SimpleUser
+from .serializers import DocumentSerializer, ImageSerializer , TagSerializer , CodeSerializer ,SimpleUserSerializer
 
 # Create your views here.
 
@@ -17,12 +17,30 @@ def getDocuments(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def getDocumentsFiltered(request,interval,limit,tag=None, title=None):
-    documents = Document.objects.all()
+def getUser(request,name):
+    try:
+        user = SimpleUser.objects.get(name=name)
+    except:
+        user = None
+    
+    print("------\n-----USUARIO:-------\n------",user)
+    serializer = SimpleUserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getUsers(request):
+    users = SimpleUser.objects.all()
+    
+    serializer = SimpleUserSerializer(users, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getDocumentsFiltered(request,user,interval,limit,tag=None, title=None):
+    documents = Document.objects.filter(user__name=user)
     if tag!=None and tag!='0':
         documents = Document.objects.filter(tag=tag)
     if title!=None:
-        documents = documents.filter(title=title)
+        documents = documents.filter(title__icontains=title)
     nlen = len(documents)
     #[0+(interval*limit):limit+(interval*limit)]
     documents = documents[::-1][0+(interval*limit):limit+(interval*limit)]
@@ -43,11 +61,14 @@ def deleteDocument(request,id):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['PUT'])
-def updateDocument(request, id):
+def updateDocument(request,id , user):
     data = request.data
+    
     document = Document.objects.get(_id=id)
+    userObject = SimpleUser.objects.get(name = user)
     document.title = data['title']
     document.text = data['text']
+    document.user= userObject
     if data['tag'] == None or data['tag'] == '0':
         document.tag = None
     else:
@@ -58,7 +79,8 @@ def updateDocument(request, id):
 
 
 @api_view(['POST'])
-def postDocuments(request):
+def postDocuments(request, name):
+    user = SimpleUser.objects.get(name=name)
     try:
         data = request.data
         tagValue = None
@@ -70,13 +92,14 @@ def postDocuments(request):
             title=data['title'],
             text=data['text'],
             date=data['date'],
-            tag = tagValue
+            tag = tagValue,
+            user = user
         )
         document.save()
         serializer = DocumentSerializer(document, many=False)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     except:
-        Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        return Response([], status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def getImages(request):
@@ -97,8 +120,8 @@ def getImage(request,id):
 
 
 @api_view(['GET'])
-def getTags(request):
-    tags = Tag.objects.all()
+def getTags(request , name):
+    tags = Tag.objects.filter(user__name=name)
     serializer = TagSerializer(tags, many=True)
     return Response(serializer.data)
 
@@ -118,8 +141,26 @@ def updateTag(request, id):
     return Response(serializer.data)
 
 @api_view(['POST'])
-def postTag(request):
-    serializer = TagSerializer(data=request.data)
+def postTag(request , name):
+    user = SimpleUser.objects.get(name=name)
+    data = request.data
+
+    tag = Tag.objects.create(
+        name=data['name'],
+        user=user
+    )
+    print('tag',tag)
+    tag.save()
+    serializer = TagSerializer(tag , many=False)
+    try:
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except:
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def postUser(request):
+    serializer = SimpleUserSerializer(data=request.data)
     try:
         serializer.is_valid(raise_exception=True)
         serializer.save()
