@@ -25,6 +25,6 @@
 * 3 - click "tags" and create some tags to classify the texts if you want
 * 4 - click "create" and create your text
 * 5 - use ##img## if you want to add an image , or use ##code## to add a code
-
+ - ![Project Screenshot](./blogText.png)
 
 
