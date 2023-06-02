@@ -1,5 +1,6 @@
 # myBlog
  - Personal app to make texts , add images and piece of codes
+ - (./blogHome.png)
  
 # Download & Setup Instructions
 * 1 - cd myBlog
